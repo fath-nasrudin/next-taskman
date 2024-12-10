@@ -1,8 +1,11 @@
-import { signIn, signOut } from '@/lib/auth';
+import { auth, signIn, signOut } from '@/lib/auth';
+import Link from 'next/link';
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
   return (
     <div>
+      <div>{session?.user?.name}</div>
       <form
         action={async () => {
           'use server';
@@ -20,6 +23,7 @@ export default function Home() {
       >
         <button type="submit">Signout</button>
       </form>
+      <Link href="/protected">Go To Protected Route</Link>
     </div>
   );
 }
