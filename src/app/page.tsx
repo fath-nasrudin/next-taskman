@@ -1,5 +1,6 @@
 import { auth, signIn, signOut } from '@/lib/auth';
 import Link from 'next/link';
+import PageClient from './page.client';
 
 export default async function Home() {
   const session = await auth();
@@ -24,6 +25,8 @@ export default async function Home() {
         <button type="submit">Signout</button>
       </form>
       <Link href="/protected">Go To Protected Route</Link>
+
+      <PageClient />
     </div>
   );
 }
