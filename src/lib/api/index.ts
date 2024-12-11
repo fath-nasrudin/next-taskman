@@ -20,3 +20,13 @@ export const getProject = async (projectId: string) => {
 export const getProjectsByUserId = async (userId: string) => {
   return prisma.project.findMany({ where: { userId: userId } });
 };
+
+export const updateProject = async (
+  projectFormValues: ProjectFormValues,
+  projectId: string
+) => {
+  return prisma.project.update({
+    where: { id: projectId },
+    data: projectFormValues,
+  });
+};
