@@ -1,9 +1,25 @@
 import Google from 'next-auth/providers/google';
 import type { NextAuthConfig } from 'next-auth';
+import { Provider } from 'next-auth/providers';
 
-// Notice this is only an object, not a full Auth.js instance
+const providers: Provider[] = [Google];
+
+export const providerMap: { id: string; name: string }[] = providers
+  .map((provider) => {
+    if (typeof provider === 'function') {
+      const providerData = provider();
+      return { id: providerData.id, name: providerData.name };
+    } else {
+      return { id: provider.id, name: provider.name };
+    }
+  })
+  .filter((provider) => provider.id !== 'credentials');
+
 export default {
-  providers: [Google],
+  providers,
+  pages: {
+    signIn: '/login',
+  },
   callbacks: {
     authorized: async ({ auth }) => {
       // Logged in users are authenticated, otherwise redirect to login page
