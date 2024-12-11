@@ -1,11 +1,14 @@
 import { prisma } from '@/lib/prisma';
 import { ProjectFormValues } from '@/lib/schemas';
 
-export const createProject = async (projectFormValues: ProjectFormValues) => {
+export const createProject = async (
+  projectFormValues: ProjectFormValues,
+  userId: string
+) => {
   return prisma.project.create({
     data: {
       name: projectFormValues.name,
-      userId: projectFormValues.userId,
+      userId: userId,
     },
   });
 };
