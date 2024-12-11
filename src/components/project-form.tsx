@@ -13,13 +13,15 @@ import {
 import { Input } from './ui/input';
 import { SubmitButton } from './submit-button';
 import { SaveIcon } from 'lucide-react';
+import { Button } from './ui/button';
 
 export type Props = {
   project?: NonNullable<Awaited<ReturnType<typeof getProject>>>;
   onSubmit: (projectFormValues: ProjectFormValues) => Promise<void>;
+  onCancel?: () => void;
 };
 
-export function ProjectForm({ project, onSubmit }: Props) {
+export function ProjectForm({ project, onSubmit, onCancel }: Props) {
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: project
@@ -62,6 +64,17 @@ export function ProjectForm({ project, onSubmit }: Props) {
             <SaveIcon className="w-4 h-4 mr-2" />
             {project ? 'Save' : 'Create'}
           </SubmitButton>
+          {onCancel && (
+            <Button
+              onClick={() => {
+                onCancel();
+              }}
+              type="button"
+              variant="secondary"
+            >
+              Cancel
+            </Button>
+          )}
         </div>
       </form>
     </Form>
