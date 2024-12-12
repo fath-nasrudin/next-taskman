@@ -1,30 +1,40 @@
+'use client';
 import { getTasksByProjectId } from '@/lib/api';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { Loader2Icon } from 'lucide-react';
 
 export type Props = {
   projectId: string;
 };
 
 export default function Tasklist({ projectId }: Props) {
-  const query = useQuery<
-    NonNullable<Awaited<ReturnType<typeof getTasksByProjectId>>>
-  >({
+  const {
+    data: tasks,
+    isLoading,
+    isError,
+  } = useSuspenseQuery<Awaited<ReturnType<typeof getTasksByProjectId>>>({
     queryKey: ['tasks', projectId],
     queryFn: async () => {
       const response = await fetch(
         `http://localhost:3000/api/tasks?projectid=${projectId}`
       );
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error('Failed to fetch tasks');
       }
-      return response.json();
+      const data = await response.json();
+      return data;
     },
+    staleTime: 1000 * 60 * 5, // Cache duration: 5 minutes
   });
-  const tasks: Awaited<ReturnType<typeof getTasksByProjectId>> | undefined =
-    query.data;
 
-  if (!tasks) {
-    return <>tasks with given projectid not found</>;
+  if (isLoading) {
+    return <Loader2Icon className="w-8 h-8 animate-spin" />;
+  }
+
+  if (isError || !tasks) {
+    return (
+      <p>Tasks with the given project ID not found or an error occurred.</p>
+    );
   }
 
   return (

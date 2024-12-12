@@ -1,9 +1,9 @@
-'use client';
 import React from 'react';
-import { createTaskAction } from '@/actions/task';
-import { TaskForm } from '@/components/task-form';
 import Link from 'next/link';
-import Tasklist from '../../task-list';
+import { PageClient } from './page.client';
+import { getQueryClient } from '@/lib/query-client';
+import { getTasksByProjectId } from '@/lib/api';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
 export type Props = {
   params: Promise<{
@@ -15,22 +15,27 @@ const extractIdFromSlug = (slug: string): string => {
   return slug.split('-').pop() || '';
 };
 
-export default function ProjectPage({ params }: Props) {
-  const { slug } = React.use(params);
+export default async function ProjectPage({ params }: Props) {
+  const { slug } = await params;
   const projectId: string = extractIdFromSlug(slug);
+  const queryClient = getQueryClient();
+
+  // prefetch the data
+  queryClient.prefetchQuery({
+    queryKey: ['tasks', projectId],
+    queryFn: async () => {
+      return getTasksByProjectId(projectId);
+    },
+  });
 
   return (
     <div>
       <p>Project: {slug}</p>
       <p>Id: {projectId}</p>
       <Link href="/app">Back home</Link>
-      <TaskForm
-        projectId={projectId}
-        onSubmit={async (taskFormValues) => {
-          await createTaskAction(taskFormValues);
-        }}
-      />
-      <Tasklist projectId={projectId} />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <PageClient projectId={projectId} />
+      </HydrationBoundary>
     </div>
   );
 }
