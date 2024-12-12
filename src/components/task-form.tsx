@@ -16,6 +16,8 @@ import { taskFormSchema, TaskFormValues } from '@/lib/schemas';
 import { SaveIcon } from 'lucide-react';
 import { SubmitButton } from './submit-button';
 import { Button } from './ui/button';
+import { Select, SelectTrigger, SelectValue } from './ui/select';
+import { TaskFormSelectProject } from './task-form-select';
 
 export type Props = {
   task?: NonNullable<Awaited<ReturnType<typeof getTask>>>;
@@ -59,6 +61,26 @@ export function TaskForm({ task, projectId, onSubmit, onCancel }: Props) {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="projectId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Project</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select project" />
+                  </SelectTrigger>
+                </FormControl>
+                <TaskFormSelectProject />
+              </Select>
+
               <FormMessage />
             </FormItem>
           )}
