@@ -5,9 +5,9 @@ import { TaskForm } from '@/components/task-form';
 import Link from 'next/link';
 
 export type Props = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 const extractIdFromSlug = (slug: string) => {
