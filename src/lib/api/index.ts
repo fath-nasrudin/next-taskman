@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { ProjectFormValues } from '@/lib/schemas';
+import { ProjectFormValues, TaskFormValues } from '@/lib/schemas';
 
 export const createProject = async (
   projectFormValues: ProjectFormValues,
@@ -33,4 +33,21 @@ export const updateProject = async (
 
 export const deleteProject = async (projectId: string) => {
   return prisma.project.delete({ where: { id: projectId } });
+};
+
+export const createTask = async (
+  taskFormValues: TaskFormValues,
+  userId: string
+) => {
+  return prisma.task.create({
+    data: {
+      name: taskFormValues.name,
+      projectId: taskFormValues.projectId,
+      userId: userId,
+    },
+  });
+};
+
+export const getTask = async (taskId: string) => {
+  return prisma.task.findUnique({ where: { id: taskId } });
 };
