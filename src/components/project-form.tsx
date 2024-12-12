@@ -9,6 +9,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from './ui/input';
 import { SubmitButton } from './submit-button';
@@ -55,6 +56,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: Props) {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
