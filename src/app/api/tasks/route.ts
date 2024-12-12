@@ -29,14 +29,9 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await getTasksByProjectId(projectid);
-    return NextResponse.json(
-      {
-        data: data,
-      },
-      {
-        status: 200,
-      }
-    );
+    return NextResponse.json(data, {
+      status: 200,
+    });
   } catch (error: unknown) {
     console.error('Authentication error:', error);
     let status = 500;

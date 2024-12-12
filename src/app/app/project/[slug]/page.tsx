@@ -3,6 +3,7 @@ import React from 'react';
 import { createTaskAction } from '@/actions/task';
 import { TaskForm } from '@/components/task-form';
 import Link from 'next/link';
+import Tasklist from '../../task-list';
 
 export type Props = {
   params: Promise<{
@@ -10,13 +11,13 @@ export type Props = {
   }>;
 };
 
-const extractIdFromSlug = (slug: string) => {
-  return slug.split('-').pop();
+const extractIdFromSlug = (slug: string): string => {
+  return slug.split('-').pop() || '';
 };
 
 export default function ProjectPage({ params }: Props) {
   const { slug } = React.use(params);
-  const projectId = extractIdFromSlug(slug);
+  const projectId: string = extractIdFromSlug(slug);
 
   return (
     <div>
@@ -29,6 +30,7 @@ export default function ProjectPage({ params }: Props) {
           await createTaskAction(taskFormValues);
         }}
       />
+      <Tasklist projectId={projectId} />
     </div>
   );
 }
