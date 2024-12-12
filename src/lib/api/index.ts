@@ -51,3 +51,11 @@ export const createTask = async (
 export const getTask = async (taskId: string) => {
   return prisma.task.findUnique({ where: { id: taskId } });
 };
+
+export const getTasksByProjectId = async (projectId: string) => {
+  return prisma.task.findMany({ where: { projectId } });
+};
+
+export const getTasksByUserId = async (userId: string) => {
+  return prisma.task.findMany({ where: { userId } });
+};
