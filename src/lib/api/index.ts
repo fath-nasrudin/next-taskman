@@ -49,13 +49,43 @@ export const createTask = async (
 };
 
 export const getTask = async (taskId: string) => {
-  return prisma.task.findUnique({ where: { id: taskId } });
+  return prisma.task.findUnique({
+    where: { id: taskId },
+    include: {
+      project: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
+    },
+  });
 };
 
 export const getTasksByProjectId = async (projectId: string) => {
-  return prisma.task.findMany({ where: { projectId } });
+  return prisma.task.findMany({
+    where: { projectId },
+    include: {
+      project: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
+    },
+  });
 };
 
 export const getTasksByUserId = async (userId: string) => {
-  return prisma.task.findMany({ where: { userId } });
+  return prisma.task.findMany({
+    where: { userId },
+    include: {
+      project: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
+    },
+  });
 };
