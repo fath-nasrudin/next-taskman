@@ -9,27 +9,12 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
+import { NavProjectsSkeleton } from './nav-projects.client';
 import { NavProjects } from './nav-projects';
-import { getQueryClient } from '@/lib/query-client';
-import { getProjectsByUserId } from '@/lib/api';
-import { auth } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
 export async function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const session = await auth();
-  if (!session) redirect('/login');
-
-  const queryClient = getQueryClient();
-  queryClient.prefetchQuery({
-    queryKey: ['projects'],
-    queryFn: () => {
-      return getProjectsByUserId(session.user.id);
-    },
-  });
-
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -39,9 +24,9 @@ export async function AppSidebar({
         <SidebarGroup>
           <SidebarGroupLabel>Projects</SidebarGroupLabel>
           <SidebarGroupContent>
-            <HydrationBoundary state={dehydrate(queryClient)}>
+            <React.Suspense fallback={<NavProjectsSkeleton />}>
               <NavProjects />
-            </HydrationBoundary>
+            </React.Suspense>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
