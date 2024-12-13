@@ -10,7 +10,9 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { getProject } from '@/lib/api';
+import { ProjectFormValues } from '@/lib/schemas';
 import { DialogDescription } from '@radix-ui/react-dialog';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Edit2Icon } from 'lucide-react';
 import { useState } from 'react';
 
@@ -22,6 +24,24 @@ export const EditProject = ({
   projectData: NonNullable<Awaited<ReturnType<typeof getProject>>>;
 }) => {
   const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationKey: ['updateProject'],
+    mutationFn: async ({
+      projectFormValues,
+      projectId,
+    }: {
+      projectFormValues: ProjectFormValues;
+      projectId: string;
+    }) => {
+      await updateProjectAction(projectFormValues, projectId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -37,7 +57,7 @@ export const EditProject = ({
         <ProjectForm
           project={projectData}
           onSubmit={async (projectFormValues) => {
-            await updateProjectAction(projectFormValues, projectId);
+            mutate({ projectFormValues, projectId });
             setOpen(false);
           }}
           onCancel={() => {

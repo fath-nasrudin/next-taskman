@@ -11,11 +11,23 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { DialogDescription } from '@radix-ui/react-dialog';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
 export const DeleteProject = ({ projectId }: { projectId: string }) => {
   const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationKey: ['deleteProject'],
+    mutationFn: async (projectId: string) => {
+      await deleteProjectAction(projectId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -36,7 +48,7 @@ export const DeleteProject = ({ projectId }: { projectId: string }) => {
             type="button"
             loadingContent={'Deleting...'}
             action={async () => {
-              await deleteProjectAction(projectId);
+              mutate(projectId);
             }}
           >
             Delete

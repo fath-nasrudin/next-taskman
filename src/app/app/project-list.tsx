@@ -20,17 +20,15 @@ export default async function ProjectList() {
   return (
     <div>
       {projects.map((p) => (
-        <Link
-          href={`/app/project/${createSlug(p)}`}
-          key={p.id}
-          className="flex justify-between"
-        >
-          <div>{p.name}</div>
+        <div key={p.id} className="flex">
+          <Link href={`/app/project/${createSlug(p)}`} className="flex-1">
+            <div>{p.name}</div>
+          </Link>
           <div>
             <EditProject projectId={p.id} projectData={p} />
             <DeleteProject projectId={p.id} />
           </div>
-        </Link>
+        </div>
       ))}
     </div>
   );
