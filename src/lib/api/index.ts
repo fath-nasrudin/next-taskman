@@ -53,6 +53,14 @@ export const createTask = async (
   });
 };
 
+export const updateTask = async (
+  taskFormValues: Partial<TaskFormValues>,
+  taskId: string
+) => {
+  // apakah perlu memastikan kalo task ini belong ke user tertentu?
+  return prisma.task.update({ where: { id: taskId }, data: taskFormValues });
+};
+
 export const getTask = async (taskId: string) => {
   return prisma.task.findUnique({
     where: { id: taskId },

@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { PageClient } from './page.client';
 import { getQueryClient } from '@/lib/query-client';
 import { getTasksByProjectId } from '@/lib/api';
@@ -30,9 +29,6 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <div>
-      <p>Project: {slug}</p>
-      <p>Id: {projectId}</p>
-      <Link href="/app">Back home</Link>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <PageClient projectId={projectId} />
       </HydrationBoundary>

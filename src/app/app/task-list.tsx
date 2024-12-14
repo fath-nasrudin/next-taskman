@@ -2,6 +2,7 @@
 import { getTasksByProjectId } from '@/lib/api';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
+import { TaskItem } from './task-item';
 
 export type Props = {
   projectId: string;
@@ -40,7 +41,7 @@ export default function Tasklist({ projectId }: Props) {
   return (
     <div>
       {tasks.map((t) => (
-        <div key={t.id}>{t.name}</div>
+        <TaskItem key={t.id} task={t} />
       ))}
     </div>
   );
