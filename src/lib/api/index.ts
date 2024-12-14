@@ -18,7 +18,12 @@ export const getProject = async (projectId: string) => {
 };
 
 export const getProjectsByUserId = async (userId: string) => {
-  return prisma.project.findMany({ where: { userId: userId } });
+  return prisma.project.findMany({
+    where: { userId: userId },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
 };
 
 export const updateProject = async (
@@ -73,6 +78,9 @@ export const getTasksByProjectId = async (projectId: string) => {
         },
       },
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
   });
 };
 
@@ -86,6 +94,9 @@ export const getTasksByUserId = async (userId: string) => {
           id: true,
         },
       },
+    },
+    orderBy: {
+      createdAt: 'desc',
     },
   });
 };
