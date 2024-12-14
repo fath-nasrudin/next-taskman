@@ -39,7 +39,7 @@ export default function Tasklist({ projectId }: Props) {
   }
 
   return (
-    <div>
+    <div className="mt-8">
       {tasks.map((t) => (
         <TaskItem key={t.id} task={t} />
       ))}
