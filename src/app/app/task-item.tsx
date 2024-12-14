@@ -25,12 +25,35 @@ export function TaskItem({ task, showProject = false }: Props) {
     }: {
       taskFormValues: Partial<TaskFormValues>;
       taskId: string;
-    }) => {
+    }): Promise<Awaited<ReturnType<typeof updateTaskUserAction>>> => {
       const updatedTask = await updateTaskUserAction(taskFormValues, taskId);
-      return { updatedTask };
+      return updatedTask;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    onMutate: async ({ taskFormValues, taskId }) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+
+      await queryClient.cancelQueries({ queryKey: ['tasks'] });
+
+      const previousTasks = queryClient.getQueryData(['tasks']);
+
+      queryClient.setQueriesData(
+        { queryKey: ['tasks'] },
+        (old: NonNullable<Awaited<ReturnType<typeof getTasksByProjectId>>>) => {
+          return old.map((task) => {
+            if (task.id === taskId) {
+              return { ...task, ...taskFormValues };
+            }
+            return task;
+          });
+        }
+      );
+
+      return { previousTasks };
+    },
+
+    onError: (err, data, context) => {
+      queryClient.setQueryData(['tasks'], context?.previousTasks);
     },
   });
 
