@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { SelectContent, SelectItem } from './ui/select';
 import { getProjectsByUserId } from '@/lib/api';
 
 export function TaskFormSelectProject() {
-  const query = useQuery<
+  const { data: projects } = useSuspenseQuery<
     NonNullable<Awaited<ReturnType<typeof getProjectsByUserId>>>
   >({
     queryKey: ['projects'],
@@ -15,12 +15,7 @@ export function TaskFormSelectProject() {
       return response.json();
     },
   });
-  const projects: Awaited<ReturnType<typeof getProjectsByUserId>> | undefined =
-    query.data;
 
-  if (!projects) {
-    return <></>;
-  }
   return (
     <SelectContent>
       {projects.map((p) => (

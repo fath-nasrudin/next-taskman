@@ -1,7 +1,7 @@
 import React from 'react';
 import { PageClient } from './page.client';
 import { getQueryClient } from '@/lib/query-client';
-import { getTasksByProjectId } from '@/lib/api';
+import { getProject, getTasksByProjectId } from '@/lib/api';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
 export type Props = {
@@ -25,6 +25,15 @@ export default async function ProjectPage({ params }: Props) {
     queryFn: async () => {
       return getTasksByProjectId(projectId);
     },
+  });
+
+  // prefetch the data
+  queryClient.prefetchQuery({
+    queryKey: ['projects', projectId],
+    queryFn: async () => {
+      return getProject(projectId);
+    },
+    staleTime: 10 * 60 * 1000,
   });
 
   return (
