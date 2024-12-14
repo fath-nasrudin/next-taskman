@@ -8,20 +8,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { getProject } from '@/lib/api';
 import { ProjectFormValues } from '@/lib/schemas';
-import { DialogDescription } from '@radix-ui/react-dialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Edit2Icon } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export const EditProject = ({
   projectId,
   projectData,
+  children,
 }: {
   projectId: string;
   projectData: NonNullable<Awaited<ReturnType<typeof getProject>>>;
+  children?: React.ReactNode;
 }) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -45,9 +47,13 @@ export const EditProject = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          <Edit2Icon />
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <Button variant="ghost" size="icon">
+            <Edit2Icon />
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>

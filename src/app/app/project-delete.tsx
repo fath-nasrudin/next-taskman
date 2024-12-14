@@ -13,9 +13,15 @@ import {
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash2Icon } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-export const DeleteProject = ({ projectId }: { projectId: string }) => {
+export const DeleteProject = ({
+  projectId,
+  children,
+}: {
+  projectId: string;
+  children: React.ReactNode;
+}) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -31,9 +37,13 @@ export const DeleteProject = ({ projectId }: { projectId: string }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          <Trash2Icon />
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <Button variant="ghost" size="icon">
+            <Trash2Icon />
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
