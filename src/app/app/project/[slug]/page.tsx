@@ -28,10 +28,8 @@ export default async function ProjectPage({ params }: Props) {
   });
 
   return (
-    <div>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <PageClient projectId={projectId} />
-      </HydrationBoundary>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PageClient projectId={projectId} />
+    </HydrationBoundary>
   );
 }

@@ -20,7 +20,7 @@ export function PageClient({ projectId }: { projectId: string }) {
     },
   });
   return (
-    <>
+    <div className="w-full max-w-screen-lg mx-auto">
       <TaskForm
         projectId={projectId}
         onSubmit={async (taskFormValues) => {
@@ -30,6 +30,6 @@ export function PageClient({ projectId }: { projectId: string }) {
       <Suspense fallback={<p>Loading...</p>}>
         <Tasklist projectId={projectId} />
       </Suspense>
-    </>
+    </div>
   );
 }
