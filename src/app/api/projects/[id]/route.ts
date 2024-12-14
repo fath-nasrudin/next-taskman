@@ -1,7 +1,7 @@
 import { getProject } from '@/lib/api';
 import { auth } from '@/lib/auth';
 import { AuthError } from 'next-auth';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export type Props = {
   params: Promise<{
@@ -9,8 +9,8 @@ export type Props = {
   }>;
 };
 
-export async function GET({ params }: Props) {
-  const id = (await params).id;
+export async function GET(request: NextRequest, { params }: Props) {
+  const id = (await params)?.id;
   try {
     const session = await auth();
 
