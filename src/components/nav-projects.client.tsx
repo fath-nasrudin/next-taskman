@@ -41,8 +41,8 @@ export function NavProjectsClient() {
 
       return response.json();
     },
-    retry: 3,
-    retryDelay: 5 * 1000,
+
+    staleTime: 1000 * 60 * 5, // Cache duration: 5 minutes
   });
 
   if (isLoading) {
