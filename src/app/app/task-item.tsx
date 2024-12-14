@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HashIcon } from 'lucide-react';
 import Link from 'next/link';
 import { DeleteTask } from './task-delete';
+import { EditTask } from './task-edit';
 
 export type Props = {
   task: NonNullable<Awaited<ReturnType<typeof getTasksByProjectId>>>[number];
@@ -74,6 +75,7 @@ export function TaskItem({ task, showProject = false }: Props) {
           </div>
           {/* actions */}
           <div>
+            <EditTask taskData={task} taskId={task.id} />
             <DeleteTask taskId={task.id} />
           </div>
         </div>
