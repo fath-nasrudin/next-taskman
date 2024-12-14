@@ -61,6 +61,11 @@ export const updateTask = async (
   return prisma.task.update({ where: { id: taskId }, data: taskFormValues });
 };
 
+export const deleteTask = async (taskId: string) => {
+  // apakah perlu memastikan kalo task ini belong ke user tertentu?
+  return prisma.task.delete({ where: { id: taskId } });
+};
+
 export const getTask = async (taskId: string) => {
   return prisma.task.findUnique({
     where: { id: taskId },

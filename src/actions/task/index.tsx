@@ -1,5 +1,5 @@
 'use server';
-import { createTask, updateTask } from '@/lib/api';
+import { createTask, deleteTask, updateTask } from '@/lib/api';
 import { auth } from '@/lib/auth';
 import { TaskFormValues } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
@@ -34,6 +34,23 @@ export const updateTaskUserAction = async (
     if (!userId) throw new Error('NoUserId');
 
     const task = await updateTask(taskFormValues, taskId);
+
+    return task;
+  } catch (error) {
+    console.log(error);
+    return error;
+    return;
+  }
+};
+
+export const deleteTaskUserAction = async (taskId: string) => {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!session) throw new Error('NotAuthorized');
+    if (!userId) throw new Error('NoUserId');
+
+    const task = await deleteTask(taskId);
 
     return task;
   } catch (error) {

@@ -8,6 +8,7 @@ import { createSlug } from '@/lib/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HashIcon } from 'lucide-react';
 import Link from 'next/link';
+import { DeleteTask } from './task-delete';
 
 export type Props = {
   task: NonNullable<Awaited<ReturnType<typeof getTasksByProjectId>>>[number];
@@ -67,7 +68,15 @@ export function TaskItem({ task, showProject = false }: Props) {
         }}
       />
       <div className="flex-1">
-        <div className={`${task.isDone && 'line-through'}`}>{task.name}</div>
+        <div className="flex">
+          <div className={`flex-1 ${task.isDone && 'line-through'}`}>
+            {task.name}
+          </div>
+          {/* actions */}
+          <div>
+            <DeleteTask taskId={task.id} />
+          </div>
+        </div>
 
         {/* footer */}
         <div className="flex">
