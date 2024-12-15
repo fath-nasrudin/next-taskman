@@ -41,6 +41,7 @@ export function ProjectForm({ project, onSubmit, onCancel }: Props) {
       <form
         onSubmit={form.handleSubmit(async (values) => {
           await onSubmit(values);
+          form.reset();
         })}
       >
         <FormField

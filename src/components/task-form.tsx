@@ -49,6 +49,7 @@ export function TaskForm({ task, projectId, onSubmit, onCancel }: Props) {
           <form
             onSubmit={form.handleSubmit(async (values) => {
               await onSubmit(values);
+              form.reset();
             })}
             className="flex flex-col gap-4"
           >
