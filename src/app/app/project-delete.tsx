@@ -20,7 +20,7 @@ export const DeleteProject = ({
   children,
 }: {
   projectId: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
