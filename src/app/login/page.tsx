@@ -4,7 +4,7 @@ import { providerMap } from '@/lib/auth/auth.config';
 import React from 'react';
 
 export default async function LoginPage(props: {
-  searchParams: { callbackUrl: string | undefined };
+  searchParams: Promise<{ callbackUrl: string | undefined }>;
 }) {
   const { callbackUrl } = await props.searchParams;
   return (
