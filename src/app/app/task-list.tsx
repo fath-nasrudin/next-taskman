@@ -3,6 +3,7 @@ import { getTasksByProjectId } from '@/lib/api';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
 import { TaskItem } from './task-item';
+import { env } from '@/lib/env';
 
 export type Props = {
   projectId: string;
@@ -17,7 +18,7 @@ export default function Tasklist({ projectId }: Props) {
     queryKey: ['tasks', projectId],
     queryFn: async () => {
       const response = await fetch(
-        `http://localhost:3000/api/tasks?projectid=${projectId}`
+        `${env.NEXT_PUBLIC_BASE_URL}/api/tasks?projectid=${projectId}`
       );
       if (!response.ok) {
         throw new Error('Failed to fetch tasks');

@@ -10,6 +10,7 @@ import {
 } from '@tanstack/react-query';
 import { TaskFormValues } from '@/lib/schemas';
 import type { getProject } from '@/lib/api';
+import { env } from '@/lib/env';
 
 export function PageClient({ projectId }: { projectId: string }) {
   const queryClient = useQueryClient();
@@ -31,7 +32,7 @@ export function PageClient({ projectId }: { projectId: string }) {
     queryKey: ['projects', projectId],
     queryFn: async () => {
       const response = await fetch(
-        `http://localhost:3000/api/projects/${projectId}`
+        `${env.NEXT_PUBLIC_BASE_URL}/api/projects/${projectId}`
       );
 
       if (!response.ok) {

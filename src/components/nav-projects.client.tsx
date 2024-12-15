@@ -21,6 +21,7 @@ import {
 } from './ui/dropdown-menu';
 import { EditProject } from '@/app/app/project-edit';
 import { DeleteProject } from '@/app/app/project-delete';
+import { env } from '@/lib/env';
 
 export function NavProjectsSkeleton({ length = 5 }) {
   return (
@@ -41,7 +42,7 @@ export function NavProjectsClient() {
   >({
     queryKey: ['projects'],
     queryFn: async () => {
-      const response = await fetch('http://localhost:3000/api/projects');
+      const response = await fetch(`${env.NEXT_PUBLIC_BASE_URL}/api/projects`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch tasktasks');
