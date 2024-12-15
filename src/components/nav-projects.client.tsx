@@ -1,6 +1,7 @@
 'use client';
 
 import type { getProjectsByUserId } from '@/lib/api';
+import { useSession } from 'next-auth/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import {
   SidebarMenu,
@@ -37,6 +38,7 @@ export function NavProjectsSkeleton({ length = 5 }) {
 
 export function NavProjectsClient() {
   const path = usePathname();
+  const { data: session } = useSession();
   const { data: projects, isLoading } = useSuspenseQuery<
     NonNullable<Awaited<ReturnType<typeof getProjectsByUserId>>>
   >({
@@ -62,11 +64,13 @@ export function NavProjectsClient() {
     return <p>No Projects</p>;
   }
 
-  const navItems = projects.map((p) => ({
-    title: p.name,
-    url: `/app/project/${createSlug(p)}`,
-    icon: HashIcon,
-  }));
+  const navItems = projects
+    .filter((p) => p.id !== session?.user.defaultProjectId)
+    .map((p) => ({
+      title: p.name,
+      url: `/app/project/${createSlug(p)}`,
+      icon: HashIcon,
+    }));
 
   return (
     <SidebarMenu>

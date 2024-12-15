@@ -1,6 +1,11 @@
 import { prisma } from '@/lib/prisma';
 import { ProjectFormValues, TaskFormValues } from '@/lib/schemas';
 
+export const getUserDefaultProjectId = async (userId: string) => {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  return user?.defaultProjectId;
+};
+
 export const createProject = async (
   projectFormValues: ProjectFormValues,
   userId: string

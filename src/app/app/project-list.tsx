@@ -16,7 +16,9 @@ export default async function ProjectList() {
     redirect('/login');
   }
 
-  const projects = await getProjectsByUserId(session?.user.id);
+  let projects = await getProjectsByUserId(session?.user.id);
+  projects = projects.filter((p) => p.id !== session.user.defaultProjectId);
+
   return (
     <div className="mt-8">
       {projects.map((p) => (

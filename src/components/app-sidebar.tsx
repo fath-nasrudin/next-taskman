@@ -8,7 +8,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
-  SidebarMenuAction,
   SidebarRail,
 } from '@/components/ui/sidebar';
 import { NavProjectsSkeleton } from './nav-projects.client';
@@ -17,8 +16,8 @@ import { SidebarProfile } from './sidebar-profile';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { PlusIcon } from 'lucide-react';
-import { Button } from './ui/button';
 import { CreateProject } from '@/app/app/project-create';
+import { NavDefault } from './nav-defaut';
 
 export async function AppSidebar({
   ...props
@@ -41,6 +40,9 @@ export async function AppSidebar({
         />
       </SidebarHeader>
       <SidebarContent>
+        <SidebarGroup>
+          <NavDefault />
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Projects</SidebarGroupLabel>
           <SidebarGroupAction>

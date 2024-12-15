@@ -14,6 +14,9 @@ export const updateProjectAction = async (
     if (!session) throw new Error('NotAuthorized');
     if (!userId) throw new Error('NoUserId');
 
+    // Not allowed to update default project
+    if (session?.user?.defaultProjectId === projectId) return;
+
     const updatedProject = await updateProject(projectFormValues, projectId);
 
     // revalidate projects data subscribers

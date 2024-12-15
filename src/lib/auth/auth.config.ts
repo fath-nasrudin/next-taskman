@@ -1,6 +1,7 @@
 import Google from 'next-auth/providers/google';
 import type { NextAuthConfig } from 'next-auth';
 import { Provider } from 'next-auth/providers';
+import { env } from '../env';
 
 const providers: Provider[] = [Google];
 
@@ -27,12 +28,19 @@ export default {
     },
     jwt: async ({ token, user }) => {
       if (user) {
+        const response = await fetch(
+          `${env.NEXT_PUBLIC_BASE_URL}/api/user/${user.id!}/defaultprojectid`
+        );
+        const defaultProjectId = await response.json();
         token.id = user.id;
+        token.defaultProjectId = defaultProjectId;
       }
+
       return token;
     },
     session: async ({ session, token }) => {
       session.user.id = token.id as string;
+      session.user.defaultProjectId = token.defaultProjectId;
       return session;
     },
   },

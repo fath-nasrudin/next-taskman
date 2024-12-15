@@ -10,6 +10,9 @@ export const deleteProjectAction = async (projectId: string) => {
     if (!session) throw new Error('NotAuthorized');
     if (!userId) throw new Error('NoUserId');
 
+    // Not allowed to update default project
+    if (session?.user?.defaultProjectId === projectId) return;
+
     const deletedProject = await deleteProject(projectId);
 
     // revalidate projects data subscribers

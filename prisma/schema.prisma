@@ -14,16 +14,18 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  name          String?
-  email         String          @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  projects      Project[]
+  id               String          @id @default(cuid())
+  name             String?
+  email            String          @unique
+  emailVerified    DateTime?
+  image            String?
+  defaultProjectId String?         @unique
+  defaultProject   Project?        @relation("defaultProject", fields: [defaultProjectId], references: [id])
+  accounts         Account[]
+  sessions         Session[]
+  projects         Project[]
   // Optional for WebAuthn support
-  Authenticator Authenticator[]
+  Authenticator    Authenticator[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -90,6 +92,7 @@ model Project {
   name      String
   userId    String
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  defaultBy User?    @relation("defaultProject")
   tasks     Task[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
