@@ -40,7 +40,11 @@ export const DeleteProject = ({
         {children ? (
           children
         ) : (
-          <Button variant="ghost" size="icon">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="border-transparent hover:border-muted-foreground border-[1px] rounded-md"
+          >
             <Trash2Icon />
           </Button>
         )}

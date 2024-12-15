@@ -18,10 +18,13 @@ export default async function ProjectList() {
 
   const projects = await getProjectsByUserId(session?.user.id);
   return (
-    <div>
+    <div className="mt-8">
       {projects.map((p) => (
-        <div key={p.id} className="flex">
-          <Link href={`/app/project/${createSlug(p)}`} className="flex-1">
+        <div
+          key={p.id}
+          className="border-b-[1px] hover:bg-muted flex items-center"
+        >
+          <Link href={`/app/project/${createSlug(p)}`} className="p-4 flex-1">
             <div>{p.name}</div>
           </Link>
           <div>

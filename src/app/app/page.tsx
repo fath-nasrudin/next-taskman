@@ -1,5 +1,4 @@
-import { auth, signIn, signOut } from '@/lib/auth';
-import Link from 'next/link';
+import { auth } from '@/lib/auth';
 import PageClient from './page.client';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -13,26 +12,7 @@ export default async function Home() {
   }
 
   return (
-    <div>
-      <div>{session?.user?.name}</div>
-      <form
-        action={async () => {
-          'use server';
-          await signIn('google');
-        }}
-      >
-        <button type="submit">Signin with Google</button>
-      </form>
-
-      <form
-        action={async () => {
-          'use server';
-          await signOut();
-        }}
-      >
-        <button type="submit">Signout</button>
-      </form>
-      <Link href="/protected">Go To Protected Route</Link>
+    <div className="w-full max-w-screen-lg mx-auto">
       <PageClient />
       <Suspense fallback={<p>Loading...</p>}>
         <ProjectList />
