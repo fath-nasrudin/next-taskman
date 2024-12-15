@@ -2,10 +2,12 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div>
-      <h1>Taskman</h1>
-      <p>Task manager app</p>
-      <Link href="/app">Main app</Link>
+    <div className="min-h-screen flex flex-col justify-center items-center">
+      <h1 className="text-4xl font-bold text-red-500">Taskman</h1>
+      <p>A task manager app to help you manage your day</p>
+      <Link href="/app" className="text-red-500">
+        Go to App
+      </Link>
     </div>
   );
 }
