@@ -11,6 +11,7 @@ import {
 import { TaskFormValues } from '@/lib/schemas';
 import type { getProject } from '@/lib/api';
 import { env } from '@/lib/env';
+import { notFound } from 'next/navigation';
 
 export function PageClient({ projectId }: { projectId: string }) {
   const queryClient = useQueryClient();
@@ -26,7 +27,7 @@ export function PageClient({ projectId }: { projectId: string }) {
     },
   });
 
-  const { data } = useSuspenseQuery<
+  const { data: project } = useSuspenseQuery<
     NonNullable<Awaited<ReturnType<typeof getProject>>>
   >({
     queryKey: ['projects', projectId],
@@ -44,10 +45,14 @@ export function PageClient({ projectId }: { projectId: string }) {
     staleTime: 5 * 60 * 1000,
   });
 
+  if (!project) {
+    notFound();
+  }
+
   return (
     <div className="w-full max-w-screen-lg mx-auto">
       <h2 className="text-3xl font-bold ">
-        {data?.name ? data.name : 'Loading...'}
+        {project?.name ? project.name : 'Loading...'}
       </h2>
       <TaskForm
         projectId={projectId}
