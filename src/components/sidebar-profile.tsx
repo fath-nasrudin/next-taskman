@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { ChevronsUpDown, LogOutIcon } from 'lucide-react';
+import { ChevronsUpDown, CrownIcon, LogOutIcon } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/sidebar';
 import { logoutAction } from '@/actions/auth';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export function SidebarProfile({
   user,
@@ -74,6 +75,14 @@ export function SidebarProfile({
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Menu
             </DropdownMenuLabel>
+
+            <DropdownMenuItem className="gap-2 p-2 text-muted-foreground">
+              <div className="flex size-6 items-center justify-center">
+                <CrownIcon className="size-4" />
+              </div>
+              <Link href={'/app/subscription'}>Subscription</Link>
+            </DropdownMenuItem>
+
             <DropdownMenuItem
               className="gap-2 p-2 text-muted-foreground"
               onSelect={async () => {
