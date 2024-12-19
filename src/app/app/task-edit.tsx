@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import type { getTask } from '@/lib/api';
+import type { getTask, getTasksByProjectId } from '@/lib/api';
 import { TaskFormValues } from '@/lib/schemas';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -37,8 +37,32 @@ export const EditTask = ({
     }) => {
       await updateTaskUserAction(taskFormValues, taskId);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+
+    onMutate: async ({ taskFormValues, taskId }) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+
+      await queryClient.cancelQueries({ queryKey: ['tasks'] });
+
+      const previousTasks = queryClient.getQueryData(['tasks']);
+
+      queryClient.setQueriesData(
+        { queryKey: ['tasks'] },
+        (old: NonNullable<Awaited<ReturnType<typeof getTasksByProjectId>>>) => {
+          return old.map((task) => {
+            if (task.id === taskId) {
+              return { ...task, ...taskFormValues };
+            }
+            return task;
+          });
+        }
+      );
+
+      return { previousTasks };
+    },
+
+    onError: (err, data, context) => {
+      queryClient.setQueryData(['tasks'], context?.previousTasks);
     },
   });
 

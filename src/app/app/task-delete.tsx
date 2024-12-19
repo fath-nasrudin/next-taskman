@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import type { getTasksByProjectId } from '@/lib/api';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash2Icon } from 'lucide-react';
@@ -24,7 +25,28 @@ export const DeleteTask = ({ taskId }: { taskId: string }) => {
     mutationFn: async (taskId: string) => {
       await deleteTaskUserAction(taskId);
     },
-    onSuccess: () => {
+    onMutate: async (taskId: string) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+
+      await queryClient.cancelQueries({ queryKey: ['tasks'] });
+
+      const previousTasks = queryClient.getQueryData(['tasks']);
+
+      queryClient.setQueriesData(
+        { queryKey: ['tasks'] },
+        (old: NonNullable<Awaited<ReturnType<typeof getTasksByProjectId>>>) => {
+          return old.filter((task) => task.id !== taskId);
+        }
+      );
+
+      return { previousTasks };
+    },
+
+    onError: (err, data, context) => {
+      queryClient.setQueryData(['tasks'], context?.previousTasks);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
   });

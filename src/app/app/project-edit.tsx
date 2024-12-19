@@ -10,7 +10,7 @@ import {
   DialogTrigger,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { getProject } from '@/lib/api';
+import { getProject, getProjectsByUserId } from '@/lib/api';
 import { ProjectFormValues } from '@/lib/schemas';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Edit2Icon } from 'lucide-react';
@@ -39,8 +39,38 @@ export const EditProject = ({
     }) => {
       await updateProjectAction(projectFormValues, projectId);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
+
+    onMutate: async ({
+      projectFormValues,
+      projectId,
+    }: {
+      projectFormValues: ProjectFormValues;
+      projectId: string;
+    }) => {
+      await queryClient.cancelQueries({ queryKey: ['projects'] });
+
+      const prevProjects = queryClient.getQueryData(['projects']);
+
+      queryClient.setQueriesData(
+        { queryKey: ['tasks'] },
+        (old: NonNullable<Awaited<ReturnType<typeof getProjectsByUserId>>>) => {
+          return old.map((project) => {
+            if (project.id === projectId) {
+              return { ...project, ...projectFormValues };
+            }
+            return project;
+          });
+        }
+      );
+
+      return { prevProjects };
+    },
+
+    onError: (error, projectFormValues, context) => {
+      queryClient.setQueryData(['projects'], context?.prevProjects);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: 'projects' });
     },
   });
 

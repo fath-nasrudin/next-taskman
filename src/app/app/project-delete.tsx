@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import type { getProjectsByUserId } from '@/lib/api';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash2Icon } from 'lucide-react';
@@ -30,8 +31,26 @@ export const DeleteProject = ({
     mutationFn: async (projectId: string) => {
       await deleteProjectAction(projectId);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
+
+    onMutate: async (projectId) => {
+      await queryClient.cancelQueries({ queryKey: ['projects'] });
+
+      const prevProjects = queryClient.getQueryData(['projects']);
+
+      queryClient.setQueriesData(
+        { queryKey: ['tasks'] },
+        (old: NonNullable<Awaited<ReturnType<typeof getProjectsByUserId>>>) => {
+          return old.filter((p) => p.id !== projectId);
+        }
+      );
+
+      return { prevProjects };
+    },
+    onError: (error, projectFormValues, context) => {
+      queryClient.setQueryData(['projects'], context?.prevProjects);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: 'projects' });
     },
   });
   return (
