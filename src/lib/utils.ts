@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { env } from './env';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -17,3 +18,7 @@ export function formatDate(input: string | number): string {
     year: 'numeric',
   });
 }
+
+export const absoluteUrl = (path: string) => {
+  return `${env.NEXT_PUBLIC_BASE_URL}${path}`;
+};
