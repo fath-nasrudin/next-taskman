@@ -18,6 +18,15 @@ import {
 import { logoutAction } from '@/actions/auth';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { absoluteUrl } from '@/lib/utils';
+import { toast } from 'sonner';
+
+type Subscription = {
+  name: string;
+  exp?: number;
+  isPremium?: boolean;
+};
 
 export function SidebarProfile({
   user,
@@ -29,6 +38,23 @@ export function SidebarProfile({
     email?: string | null;
   };
 }) {
+  const {
+    data: subscription,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Subscription>({
+    queryKey: ['subscription'],
+    queryFn: async () => {
+      const response = await fetch(absoluteUrl(`/api/user/subscription`));
+      return await response.json();
+    },
+  });
+
+  if (isError) {
+    toast(error.message);
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -62,6 +88,9 @@ export function SidebarProfile({
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
+                <span className="text-xs">
+                  {isLoading ? 'Loading...' : subscription?.name}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
