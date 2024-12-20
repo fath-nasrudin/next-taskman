@@ -13,14 +13,20 @@ export const createProjectAction = async (
     if (!session) throw new Error('NotAuthorized');
     if (!userId) throw new Error('NoUserId');
 
-    const project = await createProject(projectFormValues, userId);
-
-    // revalidate projects data subscribers
+    const response = await createProject(projectFormValues, userId);
     revalidatePath('/app');
 
-    return project;
+    return response;
   } catch (error) {
-    console.log(error);
-    return error;
+    let message = 'Internal Server Error';
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    return {
+      error: {
+        message,
+        status: 500,
+      },
+    };
   }
 };

@@ -1,5 +1,33 @@
 import { prisma } from '@/lib/prisma';
 import { ProjectFormValues, TaskFormValues } from '@/lib/schemas';
+import { getUserSubscriptionByUserId } from './subscription';
+
+const canCreateProject = async (creatorId: string) => {
+  const FREE_MAX_PROJECT = 5;
+
+  // check if the user is pro
+  // check if the user has reached the limit
+  const [subscriptionPlan, projectCount] = await Promise.all([
+    getUserSubscriptionByUserId(creatorId),
+    prisma.project.count({ where: { userId: creatorId } }),
+  ]);
+
+  console.log({ projectCount });
+
+  if (subscriptionPlan.error) {
+    return { error: subscriptionPlan.error };
+  }
+
+  if (!subscriptionPlan.data.subscription.isPremium) {
+    // -1 for defaultproject
+    const totalProjects = projectCount - 1;
+    if (totalProjects >= FREE_MAX_PROJECT) {
+      return { status: false };
+    }
+  }
+
+  return { status: true };
+};
 
 export const getUserDefaultProjectId = async (userId: string) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -10,12 +38,27 @@ export const createProject = async (
   projectFormValues: ProjectFormValues,
   userId: string
 ) => {
-  return prisma.project.create({
+  const { error, status } = await canCreateProject(userId);
+  if (error) {
+    return { error };
+  }
+  if (!status) {
+    return {
+      error: {
+        message: 'FreeMaxLimitReached',
+        status: 402,
+      },
+    };
+  }
+
+  const createdProject = await prisma.project.create({
     data: {
       name: projectFormValues.name,
       userId: userId,
     },
   });
+
+  return { data: createdProject };
 };
 
 export const getProject = async (projectId: string) => {

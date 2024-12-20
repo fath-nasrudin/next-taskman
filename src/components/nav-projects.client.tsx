@@ -67,6 +67,7 @@ export function NavProjectsClient() {
   const navItems = projects
     .filter((p) => p.id !== session?.user.defaultProjectId)
     .map((p) => ({
+      id: p.id,
       title: p.name,
       url: `/app/project/${createSlug(p)}`,
       icon: HashIcon,
@@ -74,7 +75,7 @@ export function NavProjectsClient() {
 
   return (
     <SidebarMenu>
-      {navItems.map((item, index) => (
+      {navItems.map((item) => (
         <SidebarMenuItem key={item.url}>
           <SidebarMenuButton
             asChild
@@ -101,14 +102,14 @@ export function NavProjectsClient() {
                 }}
               >
                 <EditProject
-                  projectData={projects[index]}
-                  projectId={projects[index].id}
+                  projectData={projects.find((p) => p.id === item.id)!}
+                  projectId={item.id}
                 >
                   <span>Edit Project</span>
                 </EditProject>
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <DeleteProject projectId={projects[index].id}>
+                <DeleteProject projectId={item.id}>
                   <span>Delete Project</span>
                 </DeleteProject>
               </DropdownMenuItem>
