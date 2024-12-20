@@ -38,7 +38,7 @@ export const DeleteProject = ({
       const prevProjects = queryClient.getQueryData(['projects']);
 
       queryClient.setQueriesData(
-        { queryKey: ['tasks'] },
+        { queryKey: ['projects'] },
         (old: NonNullable<Awaited<ReturnType<typeof getProjectsByUserId>>>) => {
           return old.filter((p) => p.id !== projectId);
         }
