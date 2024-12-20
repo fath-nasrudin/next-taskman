@@ -6,9 +6,12 @@ import {
 } from '@/actions/user/subscription';
 import { Button } from '@/components/ui/button';
 import { CardFooter } from '@/components/ui/card';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 export const SubscriptionFooter = ({ isPremium }: { isPremium: boolean }) => {
+  const queryClient = useQueryClient();
+
   return (
     <CardFooter className="flex gap-4 justify-end">
       <Button
@@ -27,6 +30,7 @@ export const SubscriptionFooter = ({ isPremium }: { isPremium: boolean }) => {
               position: 'top-center',
             });
           }
+          queryClient.invalidateQueries({ queryKey: ['subscription'] });
         }}
       >
         Subscribe
@@ -48,6 +52,7 @@ export const SubscriptionFooter = ({ isPremium }: { isPremium: boolean }) => {
               position: 'top-center',
             });
           }
+          queryClient.invalidateQueries({ queryKey: ['subscription'] });
         }}
       >
         Reset
