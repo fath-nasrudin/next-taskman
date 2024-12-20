@@ -19,19 +19,10 @@ export async function addSubscription(userId: string, duration: number) {
   });
 }
 
-export async function getUserSubcriptionPlan() {
-  const currentUser = await getCurrentUser();
-  if (!currentUser) {
-    return {
-      error: {
-        message: 'NotAuthorized',
-      },
-    };
-  }
-
+export const getUserSubscriptionByUserId = async (userId: string) => {
   const userWithSubscription = await prisma.user.findUnique({
     where: {
-      id: currentUser.id,
+      id: userId,
     },
     select: {
       id: true,
@@ -63,6 +54,19 @@ export async function getUserSubcriptionPlan() {
       },
     },
   };
+};
+
+export async function getUserSubscriptionPlan() {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return {
+      error: {
+        message: 'NotAuthorized',
+      },
+    };
+  }
+
+  return getUserSubscriptionByUserId(currentUser.id);
 }
 
 export async function resetUserSubscriptionPlan() {
