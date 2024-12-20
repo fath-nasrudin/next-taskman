@@ -4,7 +4,7 @@ import { cn, formatDate } from '@/lib/utils';
 import { TriangleAlertIcon } from 'lucide-react';
 import React from 'react';
 import { SubscriptionFooter } from './footer';
-import { getUserSubcriptionPlan } from '@/lib/api/subscription';
+import { getUserSubscriptionPlan } from '@/lib/api/subscription';
 import { notFound, redirect } from 'next/navigation';
 
 export const metadata = {
@@ -13,7 +13,7 @@ export const metadata = {
 };
 
 export default async function SubscriptionPage() {
-  const { error, data } = await getUserSubcriptionPlan();
+  const { error, data } = await getUserSubscriptionPlan();
 
   if (error) {
     if (error.message === 'NotAuthorized') {
