@@ -10,6 +10,21 @@ export type Props = {
   }>;
 };
 
+const extractNameFromSlug = (slug: string) => {
+  const splittedSlug = slug.split('-');
+  splittedSlug.pop();
+  return splittedSlug.join(' ');
+};
+
+export async function generateMetadata({ params }: Props) {
+  const slug: string = (await params).slug;
+
+  return {
+    title: extractNameFromSlug(slug),
+    description: 'Your tasks based on project',
+  };
+}
+
 const extractIdFromSlug = (slug: string): string => {
   return slug.split('-').pop() || '';
 };
